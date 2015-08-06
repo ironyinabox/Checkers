@@ -1,10 +1,8 @@
 class Piece
     attr_accessor :pos, :board, :color, :king
 
-    DELTAS = [
-    [ [ 1,  1], [ 1, -1] ],  #black moves
-    [ [-1,  1], [-1, -1] ]   #white moves
-    ]
+    B_DELTAS = [ [ 1,  1], [ 1, -1] ]
+    W_DELTAS = [ [-1,  1], [-1, -1] ]
 
     def initialize(pos, board=nil, color = nil)
       @pos = pos
@@ -18,44 +16,39 @@ class Piece
     end
 
     def perform_slide(end_pos)
-      if valid_slide?(end_pos)
-        board[end_pos] = board[pos]
-        board[pos] = nil
-        self.pos = end_pos
-        return true
-      else
-        false
-      end
+      return false if !valid_slide?(end_pos)
+      board[end_pos] = board[pos]
+      board[pos] = nil
+      self.pos = end_pos
       maybe_promote
+      true
     end
 
     def perform_jump(end_pos)
-      if valid_jump?(end_pos)
-        board[end_pos] = board[pos]
-        board[jumped_pos(end_pos)] = nil
-        board[pos] = nil
-        return true
-      else
-        false
-      end
+      return false if !valid_jump?(end_pos)
+      board[end_pos] = board[pos]
+      board[jumped_pos(end_pos)] = nil
+      board[pos] = nil
+      self.pos = end_pos
       maybe_promote
+      true
     end
 
     def valid_slide?(end_pos)
       board.empty?(end_pos) &&
-      moves.include?(end_pos)
+        moves.include?(end_pos)
     end
 
     def valid_jump?(end_pos)
       board.empty?(end_pos) &&
-      jumps.include?(end_pos) &&
-      enemy_there?(end_pos)
+        jumps.include?(end_pos) &&
+          enemy_there?(end_pos)
     end
 
     def move_diffs
-      return DELTAS.flatten(1) if king?
-      return DELTAS[0] if color == :black
-      return DELTAS[1] if color == :white
+      return B_DELTAS.concat(W_DELTAS) if king?
+      return B_DELTAS if color == :black
+      return W_DELTAS if color == :white
     end
 
     def maybe_jumps
@@ -113,9 +106,9 @@ class Piece
     end
 
     def maybe_promote
-      if self.color == :black && self.pos[0] == 7
+      if self.color == :black && self.pos.first == 7
         self.king = true
-      elsif self.color == :white && self.pos[0] == 0
+      elsif self.color == :white && self.pos.first == 0
         self.king = true
       end
     end
@@ -129,6 +122,26 @@ class Piece
       end
     end
 
-    def valid_move_seq?
+    def dup(dup_board)
+      Piece.new(self.pos, dup_board, self.color)
+    end
+
+    def valid_move_seq?(move_sequence)
+      copy = board.dup
+      begin
+        copy[self.pos].perform_moves!(move_sequence)
+      rescue InvalidMoveError
+        return false
+      else
+        return true
+      end
+    end
+
+    def perform_moves
+      if valid_move_seq?(move_sequence)
+        perform_moves!(move_sequence)
+      else
+        raise InvalidMoveError
+      end
     end
 end

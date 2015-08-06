@@ -7,7 +7,6 @@ class Board
 
   def initialize
     @grid = Array.new(SIZE) {Array.new(SIZE)}
-    setup_board
   end
 
   def setup_board
@@ -51,12 +50,25 @@ class Board
     grid
   end
 
+  def pieces
+    grid.flatten.compact
+  end
+
   def add_piece(start_pos, color)
     self[start_pos] = Piece.new(start_pos, self, color )
+  end
+
+  def dup
+    dup_board = Board.new
+    pieces.each do |piece|
+      dup_board[piece.pos] = piece.dup(dup_board)
+    end
+    dup_board
   end
 end
 
 a = Board.new
+a.setup_board
 a.render
 puts
 puts
@@ -72,3 +84,7 @@ a[[4,2]].perform_jump([2,4])
 a.render
 puts
 puts
+a.add_piece([1,0], :white)
+a[[1,0]].perform_slide([0, 1])
+a.render
+p a[[0,1]].king?
