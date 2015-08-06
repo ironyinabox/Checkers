@@ -7,6 +7,7 @@ class Board
 
   def initialize
     @grid = Array.new(SIZE) {Array.new(SIZE)}
+    setup_board
   end
 
   def setup_board
