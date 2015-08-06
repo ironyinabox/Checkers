@@ -1,3 +1,4 @@
+require 'byebug'
 class Piece
     attr_accessor :pos, :board, :color, :king
 
@@ -127,7 +128,7 @@ class Piece
     def valid_move_seq?(move_sequence)
       copy = board.dup
       begin
-        copy[self.pos].perform_moves!(move_sequence)
+        copy[pos].perform_moves!(move_sequence)
       rescue InvalidMoveError
         return false
       else

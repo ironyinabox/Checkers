@@ -7,7 +7,6 @@ class Board
 
   def initialize
     @grid = Array.new(SIZE) {Array.new(SIZE)}
-    setup_board
   end
 
   def setup_board
@@ -67,31 +66,3 @@ class Board
     dup_board
   end
 end
-
-a = Board.new
-a.add_piece([4,0], :white)
-a.add_piece([1,3], :black)
-a.render
-a[ [4,0] ].perform_moves([ [3,1] ])
-a.render
-p a[[3,1]].king?
-# a.setup_board
-# a.render
-# puts
-# puts
-# a[[5,1]].perform_slide([4, 2])
-# a.render
-# puts
-# puts
-# a[[2,4]].perform_slide([3, 3])
-# a.render
-# puts
-# puts
-# a[[4,2]].perform_jump([2,4])
-# a.render
-# puts
-# puts
-# a.add_piece([1,0], :white)
-# a[[1,0]].perform_slide([0, 1])
-# a.render
-# p a[[0,1]].king?
