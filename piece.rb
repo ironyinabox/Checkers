@@ -72,7 +72,7 @@ class Piece
     def enemy_there?(end_pos)
       return false if board.empty?(jumped_pos(end_pos))
       return true if board[jumped_pos(end_pos)].color != color
-      return false
+      false
     end
 
     def maybe_moves
@@ -114,9 +114,7 @@ class Piece
     end
 
     def perform_moves!(move_sequence)
-      if move_sequence.size == 1 && perform_slide(move_sequence.first)
-        return move_sequence.first
-      end
+      return if move_sequence.size == 1 && perform_slide(move_sequence.first)
       move_sequence.each do |move|
         raise InvalidMoveError if !perform_jump(move)
       end
@@ -137,7 +135,7 @@ class Piece
       end
     end
 
-    def perform_moves
+    def perform_moves(move_sequence)
       if valid_move_seq?(move_sequence)
         perform_moves!(move_sequence)
       else
