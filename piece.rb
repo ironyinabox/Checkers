@@ -21,6 +21,7 @@ class Piece
       if valid_slide?(end_pos)
         board[end_pos] = board[pos]
         board[pos] = nil
+        self.pos = end_pos
         return true
       else
         false
@@ -28,6 +29,14 @@ class Piece
     end
 
     def perform_jump(end_pos)
+      if valid_jump?(end_pos)
+        board[end_pos] = board[pos]
+        board[jumped_pos(end_pos)] = nil
+        board[pos] = nil
+        return true
+      else
+        false
+      end
     end
 
     def valid_slide?(end_pos)
@@ -36,6 +45,9 @@ class Piece
     end
 
     def valid_jump?(end_pos)
+      board.empty?(end_pos) &&
+      jumps.include?(end_pos) &&
+      !board.empty?(jumped_pos(end_pos))
     end
 
     def move_diffs
@@ -44,12 +56,30 @@ class Piece
       return DELTAS[1] if color == :white
     end
 
+    def maybe_jumps
+      move_diffs.map do |d_pos|
+        d_row, d_col = d_pos
+        o_row, o_col = pos
+        [(d_row*2) + o_row, (d_col*2) + o_col]
+      end
+    end
+
+    def jumped_pos(end_pos)
+      e_row, e_col = end_pos
+      s_row, s_col = pos
+      [(s_row + e_row)/2, (e_col + s_col)/2]
+    end
+
     def maybe_moves
       move_diffs.map do |d_pos|
         d_row, d_col = d_pos
         o_row, o_col = pos
         [d_row + o_row, d_col + o_col]
       end
+    end
+
+    def jumps
+      maybe_jumps.select { |move| move.all? { |num| num.between?(0,7) } }
     end
 
     def moves

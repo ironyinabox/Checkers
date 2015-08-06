@@ -58,5 +58,11 @@ end
 
 a = Board.new
 a.render
-a[[5,1]].perform_slide([6, 1])
+puts
+puts
+a[[5,1]].perform_slide([4, 2])
+a.render
+a[[2,4]].perform_slide([3, 3])
+a.render
+a[[4,2]].perform_jump([2,4])
 a.render
