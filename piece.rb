@@ -1,4 +1,4 @@
-require 'byebug'
+require 'colorize'
 class Piece
     attr_accessor :pos, :board, :color, :king
 
@@ -100,9 +100,9 @@ class Piece
 
     def to_s
       if color == :black
-        "B"
+        "O".green.on_white
       else
-        "W"
+        "O".red.on_white
       end
     end
 
