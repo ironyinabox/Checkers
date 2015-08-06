@@ -62,7 +62,13 @@ puts
 puts
 a[[5,1]].perform_slide([4, 2])
 a.render
+puts
+puts
 a[[2,4]].perform_slide([3, 3])
 a.render
+puts
+puts
 a[[4,2]].perform_jump([2,4])
 a.render
+puts
+puts
